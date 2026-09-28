@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#e96b94">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="RSHA FIT">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<title>RSHA FIT</title>
+<style>
+:root{
+  --pink:#e96b94;--pink-dark:#d85886;--pink2:#fbe8ef;--pink3:#fff4f8;
+  --gray:#f3f3f6;--line:#ececf1;--text:#29292e;--muted:#7e7e89;--white:#fff;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#fafafa;color:var(--text)}
+button,input,select{font:inherit}
+.app{max-width:760px;margin:0 auto;min-height:100vh;padding-bottom:92px}
+.top{padding:22px 18px 10px}.brand{font-size:32px;font-weight:850;letter-spacing:-.8px}.tag{color:var(--muted);margin-top:4px}
+.card{background:#fff;border-radius:22px;padding:18px;margin:12px 16px;box-shadow:0 7px 24px rgba(0,0,0,.055)}
+.hero{background:linear-gradient(135deg,#ef6f9b,#d85886);color:white;cursor:pointer}.hero h2{margin:0 0 6px}.hero p{margin:0;opacity:.9}
+.btn{border:0;border-radius:14px;padding:12px 15px;font-weight:750;cursor:pointer}
+.btn.pink{background:var(--pink);color:#fff}.btn.soft{background:var(--pink2);color:var(--text)}.btn.gray{background:var(--gray);color:var(--text)}
+.btn:disabled{opacity:.45}
+.row{display:flex;align-items:center;gap:12px}.space{justify-content:space-between}.grow{flex:1}.wrap{flex-wrap:wrap}
+.nav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.95);backdrop-filter:blur(15px);border-top:1px solid #eee;display:flex;justify-content:center;z-index:30}
+.navin{width:min(760px,100%);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 8px calc(8px + env(safe-area-inset-bottom))}
+.nav button{background:none;border:0;padding:8px 1px;font-size:11px;color:#777}.nav button.active{color:var(--pink);font-weight:800}
+.screen{display:none}.screen.active{display:block}
+.search{width:calc(100% - 32px);margin:8px 16px 4px;border:0;background:var(--gray);padding:14px 15px;border-radius:16px;font-size:16px;outline:none}
+.filters{display:flex;gap:8px;overflow:auto;padding:10px 16px}.chip{white-space:nowrap;border:0;background:var(--pink2);padding:9px 12px;border-radius:999px}.chip.active{background:var(--pink);color:#fff}
+.sectionTitle{padding:16px 16px 8px;font-size:18px;font-weight:800}
+.exercise{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid #f0f0f0;background:#fff;cursor:pointer}
+.icon{width:52px;height:52px;border-radius:15px;background:var(--pink2);display:grid;place-items:center;font-size:24px;overflow:hidden}
+.icon img{width:100%;height:100%;object-fit:cover}
+.small{font-size:13px;color:var(--muted)}.title{font-weight:800}.muted{color:var(--muted)}
+.media{height:235px;background:linear-gradient(135deg,var(--pink2),#f3f3f5);display:grid;place-items:center;border-radius:20px;text-align:center;padding:18px;overflow:hidden}
+.media img,.media video{width:100%;height:100%;object-fit:contain;border-radius:15px;background:#fff}
+.modal{position:fixed;inset:0;background:rgba(20,20,25,.35);display:none;align-items:flex-end;z-index:50}.modal.show{display:flex}
+.sheet{background:#fff;width:100%;max-height:91vh;overflow:auto;border-radius:26px 26px 0 0;padding:18px 16px calc(28px + env(safe-area-inset-bottom))}
+.sheetInner{max-width:760px;margin:auto}.close{float:right;background:var(--gray);border:0;border-radius:999px;width:34px;height:34px}
+.setrow{display:grid;grid-template-columns:34px 1fr 1fr 42px;gap:8px;align-items:end;margin:10px 0}
+.setrow input{width:100%;padding:10px;border:1px solid #ddd;border-radius:12px;font-size:16px}
+.check{height:42px;border:0;border-radius:12px;background:var(--gray);font-size:20px}.check.done{background:var(--pink);color:white}
+.workoutEx{background:#fff;border-radius:18px;padding:14px;margin:12px 16px}
+.empty{text-align:center;padding:48px 22px;color:var(--muted)}
+.badge{font-size:12px;background:var(--pink2);padding:6px 9px;border-radius:999px}
+.historyItem{padding:14px 0;border-bottom:1px solid #eee;cursor:pointer}
+.statgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{background:var(--pink3);border-radius:16px;padding:14px}.stat .n{font-size:24px;font-weight:850}.stat .l{font-size:12px;color:var(--muted);margin-top:3px}
+.timer{font-size:44px;font-weight:850;text-align:center;letter-spacing:1px;margin:12px 0}
+.fav{border:0;background:transparent;font-size:24px;cursor:pointer}
+.note{font-size:12px;color:var(--muted);line-height:1.45}
+.progressbar{height:10px;background:#eee;border-radius:99px;overflow:hidden}.progressbar>div{height:100%;background:var(--pink);border-radius:99px}
+.barrow{display:grid;grid-template-columns:110px 1fr 52px;gap:10px;align-items:center;margin:12px 0}.barname{font-size:12px}.barvalue{text-align:right;font-size:12px;color:var(--muted)}
+.onlineBox{border:1px dashed #efabc2;background:#fff7fa;border-radius:18px;padding:15px;margin:12px 16px}
+.installTip{display:none;background:#fff3f7;border:1px solid #f6c8d8}
+h1,h2,h3{margin-top:0} ul,ol{padding-left:22px}
+@media(max-width:430px){.brand{font-size:29px}.card{margin-left:12px;margin-right:12px}.setrow{grid-template-columns:30px 1fr 1fr 40px}.nav button{font-size:10px}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<section id="home" class="screen active">
+  <div class="top"><div class="brand">RSHA FIT 💗</div><div class="tag">Strong looks good on you</div></div>
+  <div class="card hero" onclick="go('workout')">
+    <h2 id="heroTitle">Start Workout</h2><p id="heroSub">Build today's session</p>
+  </div>
+
+  <div id="installTip" class="card installTip">
+    <b>Install RSHA FIT on your iPhone</b>
+    <p class="small">Open the online version in Safari → Share → Add to Home Screen.</p>
+  </div>
+
+  <div class="card">
+    <h3>Quick access</h3>
+    <div class="row wrap">
+      <button class="btn soft" onclick="go('exercises')">🔎 Exercise library</button>
+      <button class="btn gray" onclick="go('history')">🕘 Workout history</button>
+      <button class="btn gray" onclick="go('progress')">📈 Progress</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Overview</h3>
+    <div class="statgrid">
+      <div class="stat"><div class="n" id="statWorkouts">0</div><div class="l">workouts</div></div>
+      <div class="stat"><div class="n" id="statSets">0</div><div class="l">completed sets</div></div>
+      <div class="stat"><div class="n" id="statVolume">0</div><div class="l">kg total volume</div></div>
+      <div class="stat"><div class="n" id="statFavs">0</div><div class="l">favorites</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="exercises" class="screen">
+  <div class="top">
+    <div class="brand">Exercises</div>
+    <div class="tag">Search, learn and add exercises to your workout</div>
+  </div>
+
+  <input id="search" class="search" placeholder="Search exercise..." oninput="renderExercises()">
+  <div id="filters" class="filters"></div>
+
+  <div class="onlineBox">
+    <div class="row space">
+      <div>
+        <div class="title">🌐 Online exercise catalog</div>
+        <div class="small">Sync more exercises, images and videos from a public exercise database when RSHA FIT is online.</div>
+      </div>
+      <button class="btn pink" onclick="syncOnlineExercises()">Sync</button>
+    </div>
+    <div id="syncStatus" class="small" style="margin-top:8px"></div>
+  </div>
+
+  <div id="recentSection"></div>
+  <div id="favoriteSection"></div>
+  <div class="sectionTitle">All exercises</div>
+  <div id="exerciseList"></div>
+</section>
+
+<section id="workout" class="screen">
+  <div class="top row space">
+    <div><div class="brand">Workout</div><div class="tag">Track every set</div></div>
+    <button class="btn pink" onclick="go('exercises')">+ Exercise</button>
+  </div>
+
+  <div class="card">
+    <div class="row space">
+      <div><div class="title">Rest timer</div><div class="small">Start it after a set</div></div>
+      <select id="restSeconds" class="btn gray">
+        <option value="60">1:00</option>
+        <option value="90" selected>1:30</option>
+        <option value="120">2:00</option>
+        <option value="180">3:00</option>
+      </select>
+    </div>
+    <div id="timerText" class="timer">01:30</div>
+    <div class="row" style="justify-content:center">
+      <button class="btn pink" onclick="startTimer()">Start</button>
+      <button class="btn gray" onclick="stopTimer()">Reset</button>
+    </div>
+  </div>
+
+  <div id="workoutList"></div>
+  <div class="card" id="finishBox"><button class="btn pink" style="width:100%" onclick="finishWorkout()">Finish Workout</button></div>
+</section>
+
+<section id="history" class="screen">
+  <div class="top"><div class="brand">History</div><div class="tag">Your completed workouts</div></div>
+  <div class="card" id="historyList"></div>
+</section>
+
+<section id="progress" class="screen">
+  <div class="top"><div class="brand">Progress</div><div class="tag">Volume, personal bests and consistency</div></div>
+  <div class="card">
+    <h3>Training summary</h3>
+    <div id="progressStats" class="statgrid"></div>
+  </div>
+  <div class="card">
+    <h3>Top exercises by volume</h3>
+    <div id="volumeBars"></div>
+  </div>
+  <div class="card">
+    <h3>Personal bests</h3>
+    <div id="prList"></div>
+  </div>
+</section>
+
+</div>
+
+<div class="nav"><div class="navin">
+<button data-s="home" class="active" onclick="go('home')">🏠<br>Home</button>
+<button data-s="exercises" onclick="go('exercises')">🏋️<br>Exercises</button>
+<button data-s="workout" onclick="go('workout')">💗<br>Workout</button>
+<button data-s="history" onclick="go('history')">🕘<br>History</button>
+<button data-s="progress" onclick="go('progress')">📈<br>Progress</button>
+</div></div>
+
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()">
+  <div class="sheet"><div class="sheetInner">
+    <button class="close" onclick="closeModal()">✕</button>
+    <div id="detail"></div>
+  </div></div>
+</div>
+
+<script>
+const STARTER_EXERCISES = [{"id": "local-1", "name": "Barbell Hip Thrust", "muscle": "Glutes", "equipment": "Barbell", "instructions": ["Drive through the heels and keep the pelvis controlled.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid over-arching the lower back", "Do not rush the lowering phase"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-2", "name": "Glute Bridge", "muscle": "Glutes", "equipment": "Bodyweight", "instructions": ["Drive through the heels and keep the pelvis controlled.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid over-arching the lower back", "Do not rush the lowering phase"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-3", "name": "Cable Kickback", "muscle": "Glutes", "equipment": "Cable", "instructions": ["Drive through the heels and keep the pelvis controlled.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid over-arching the lower back", "Do not rush the lowering phase"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-4", "name": "Abduction Machine", "muscle": "Glutes", "equipment": "Machine", "instructions": ["Drive through the heels and keep the pelvis controlled.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid over-arching the lower back", "Do not rush the lowering phase"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-5", "name": "Romanian Deadlift", "muscle": "Hamstrings", "equipment": "Barbell", "instructions": ["Keep the spine neutral and hinge from the hips.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid rounding the back", "Do not turn the movement into a squat"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-6", "name": "Dumbbell Romanian Deadlift", "muscle": "Hamstrings", "equipment": "Dumbbells", "instructions": ["Keep the spine neutral and hinge from the hips.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid rounding the back", "Do not turn the movement into a squat"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-7", "name": "Leg Curl", "muscle": "Hamstrings", "equipment": "Machine", "instructions": ["Keep the spine neutral and hinge from the hips.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid rounding the back", "Do not turn the movement into a squat"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-8", "name": "Back Squat", "muscle": "Legs", "equipment": "Barbell", "instructions": ["Keep the knees tracking in line with the feet.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid collapsing the knees inward", "Use a controlled range of motion"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-9", "name": "Front Squat", "muscle": "Legs", "equipment": "Barbell", "instructions": ["Keep the knees tracking in line with the feet.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid collapsing the knees inward", "Use a controlled range of motion"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-10", "name": "Goblet Squat", "muscle": "Legs", "equipment": "Dumbbell", "instructions": ["Keep the knees tracking in line with the feet.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid collapsing the knees inward", "Use a controlled range of motion"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-11", "name": "Leg Press", "muscle": "Legs", "equipment": "Machine", "instructions": ["Keep the knees tracking in line with the feet.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid collapsing the knees inward", "Use a controlled range of motion"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-12", "name": "Leg Extension", "muscle": "Legs", "equipment": "Machine", "instructions": ["Keep the knees tracking in line with the feet.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid collapsing the knees inward", "Use a controlled range of motion"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-13", "name": "Bulgarian Split Squat", "muscle": "Legs", "equipment": "Dumbbells", "instructions": ["Keep the knees tracking in line with the feet.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid collapsing the knees inward", "Use a controlled range of motion"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-14", "name": "Walking Lunge", "muscle": "Legs", "equipment": "Dumbbells", "instructions": ["Keep the knees tracking in line with the feet.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid collapsing the knees inward", "Use a controlled range of motion"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-15", "name": "Step Up", "muscle": "Legs", "equipment": "Dumbbells", "instructions": ["Keep the knees tracking in line with the feet.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid collapsing the knees inward", "Use a controlled range of motion"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-16", "name": "Calf Raise", "muscle": "Calves", "equipment": "Machine", "instructions": ["Move through a comfortable full range and pause at the top.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid bouncing", "Do not rush the stretch at the bottom"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-17", "name": "Bench Press", "muscle": "Chest", "equipment": "Barbell", "instructions": ["Keep the shoulder blades stable and move with control.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid excessive elbow flare", "Do not bounce the weight"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-18", "name": "Incline Bench Press", "muscle": "Chest", "equipment": "Barbell", "instructions": ["Keep the shoulder blades stable and move with control.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid excessive elbow flare", "Do not bounce the weight"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-19", "name": "Dumbbell Bench Press", "muscle": "Chest", "equipment": "Dumbbells", "instructions": ["Keep the shoulder blades stable and move with control.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid excessive elbow flare", "Do not bounce the weight"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-20", "name": "Incline Dumbbell Press", "muscle": "Chest", "equipment": "Dumbbells", "instructions": ["Keep the shoulder blades stable and move with control.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid excessive elbow flare", "Do not bounce the weight"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-21", "name": "Cable Fly", "muscle": "Chest", "equipment": "Cable", "instructions": ["Keep the shoulder blades stable and move with control.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid excessive elbow flare", "Do not bounce the weight"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-22", "name": "Push Up", "muscle": "Chest", "equipment": "Bodyweight", "instructions": ["Keep the shoulder blades stable and move with control.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid excessive elbow flare", "Do not bounce the weight"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-23", "name": "Lat Pulldown", "muscle": "Back", "equipment": "Cable", "instructions": ["Lead with the elbows and keep the torso controlled.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid shrugging", "Do not use excessive momentum"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-24", "name": "Seated Cable Row", "muscle": "Back", "equipment": "Cable", "instructions": ["Lead with the elbows and keep the torso controlled.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid shrugging", "Do not use excessive momentum"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-25", "name": "One-Arm Dumbbell Row", "muscle": "Back", "equipment": "Dumbbell", "instructions": ["Lead with the elbows and keep the torso controlled.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid shrugging", "Do not use excessive momentum"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-26", "name": "Barbell Row", "muscle": "Back", "equipment": "Barbell", "instructions": ["Lead with the elbows and keep the torso controlled.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid shrugging", "Do not use excessive momentum"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-27", "name": "Pull Up", "muscle": "Back", "equipment": "Bodyweight", "instructions": ["Lead with the elbows and keep the torso controlled.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid shrugging", "Do not use excessive momentum"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-28", "name": "Assisted Pull Up", "muscle": "Back", "equipment": "Machine", "instructions": ["Lead with the elbows and keep the torso controlled.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid shrugging", "Do not use excessive momentum"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-29", "name": "Shoulder Press", "muscle": "Shoulders", "equipment": "Dumbbells", "instructions": ["Keep the core braced and shoulders away from the ears.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid shrugging", "Do not swing the weights"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-30", "name": "Machine Shoulder Press", "muscle": "Shoulders", "equipment": "Machine", "instructions": ["Keep the core braced and shoulders away from the ears.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid shrugging", "Do not swing the weights"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-31", "name": "Lateral Raise", "muscle": "Shoulders", "equipment": "Dumbbells", "instructions": ["Keep the core braced and shoulders away from the ears.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid shrugging", "Do not swing the weights"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-32", "name": "Cable Lateral Raise", "muscle": "Shoulders", "equipment": "Cable", "instructions": ["Keep the core braced and shoulders away from the ears.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid shrugging", "Do not swing the weights"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-33", "name": "Rear Delt Fly", "muscle": "Shoulders", "equipment": "Machine", "instructions": ["Keep the core braced and shoulders away from the ears.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid shrugging", "Do not swing the weights"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-34", "name": "Face Pull", "muscle": "Shoulders", "equipment": "Cable", "instructions": ["Keep the core braced and shoulders away from the ears.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid shrugging", "Do not swing the weights"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-35", "name": "Biceps Curl", "muscle": "Biceps", "equipment": "Dumbbells", "instructions": ["Keep the elbows steady and control the lowering phase.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid swinging", "Do not move the elbows excessively"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-36", "name": "Hammer Curl", "muscle": "Biceps", "equipment": "Dumbbells", "instructions": ["Keep the elbows steady and control the lowering phase.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid swinging", "Do not move the elbows excessively"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-37", "name": "Cable Curl", "muscle": "Biceps", "equipment": "Cable", "instructions": ["Keep the elbows steady and control the lowering phase.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid swinging", "Do not move the elbows excessively"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-38", "name": "Preacher Curl", "muscle": "Biceps", "equipment": "Machine", "instructions": ["Keep the elbows steady and control the lowering phase.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid swinging", "Do not move the elbows excessively"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-39", "name": "Triceps Pushdown", "muscle": "Triceps", "equipment": "Cable", "instructions": ["Keep the upper arm stable and extend through the elbow.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid using body momentum", "Do not let the elbows wander"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-40", "name": "Overhead Triceps Extension", "muscle": "Triceps", "equipment": "Cable", "instructions": ["Keep the upper arm stable and extend through the elbow.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid using body momentum", "Do not let the elbows wander"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-41", "name": "Skull Crusher", "muscle": "Triceps", "equipment": "Barbell", "instructions": ["Keep the upper arm stable and extend through the elbow.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid using body momentum", "Do not let the elbows wander"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-42", "name": "Triceps Dip", "muscle": "Triceps", "equipment": "Bodyweight", "instructions": ["Keep the upper arm stable and extend through the elbow.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid using body momentum", "Do not let the elbows wander"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-43", "name": "Plank", "muscle": "Core", "equipment": "Bodyweight", "instructions": ["Brace the abdomen while breathing normally.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid holding your breath", "Keep the lower back controlled"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-44", "name": "Dead Bug", "muscle": "Core", "equipment": "Bodyweight", "instructions": ["Brace the abdomen while breathing normally.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid holding your breath", "Keep the lower back controlled"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-45", "name": "Crunch", "muscle": "Core", "equipment": "Bodyweight", "instructions": ["Brace the abdomen while breathing normally.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid holding your breath", "Keep the lower back controlled"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}, {"id": "local-46", "name": "Cable Crunch", "muscle": "Core", "equipment": "Cable", "instructions": ["Brace the abdomen while breathing normally.", "Set up the equipment and position yourself securely.", "Use a controlled tempo and stop if you feel sharp or unusual pain."], "mistakes": ["Avoid holding your breath", "Keep the lower back controlled"], "image": null, "video": null, "source": "RSHA FIT starter catalog"}];
+let onlineExercises = JSON.parse(localStorage.getItem('rsha_online_exercises') || '[]');
+let EXERCISES = dedupeExercises([...STARTER_EXERCISES, ...onlineExercises]);
+
+let selectedMuscle = 'All';
+let activeWorkout = JSON.parse(localStorage.getItem('rsha_active') || '[]');
+let history = JSON.parse(localStorage.getItem('rsha_history') || '[]');
+let favorites = JSON.parse(localStorage.getItem('rsha_favorites') || '[]');
+let recents = JSON.parse(localStorage.getItem('rsha_recents') || '[]');
+let timerInterval = null;
+let timerLeft = 90;
+
+function dedupeExercises(arr){
+  const seen = new Set();
+  return arr.filter(x=>{
+    const k=(x.name+'|'+x.equipment).toLowerCase();
+    if(seen.has(k)) return false;
+    seen.add(k); return true;
+  });
+}
+function esc(s=''){
+  return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+function save(){
+  localStorage.setItem('rsha_active',JSON.stringify(activeWorkout));
+  localStorage.setItem('rsha_history',JSON.stringify(history));
+  localStorage.setItem('rsha_favorites',JSON.stringify(favorites));
+  localStorage.setItem('rsha_recents',JSON.stringify(recents));
+  updateHome();
+}
+function go(id){
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.s===id));
+  if(id==='exercises') renderExercises();
+  if(id==='workout') renderWorkout();
+  if(id==='history') renderHistory();
+  if(id==='progress') renderProgress();
+  if(id==='home') updateHome();
+  window.scrollTo(0,0);
+}
+function getExercise(id){ return EXERCISES.find(e=>String(e.id)===String(id)); }
+function calcHistory(){
+  let completedSets=0, volume=0;
+  const exerciseVolume={}, prs={};
+  history.forEach(h=>h.exercises.forEach(w=>{
+    const ex=getExercise(w.exerciseId);
+    if(!ex) return;
+    w.sets.forEach(s=>{
+      if(s.done){
+        completedSets++;
+        const weight=Number(s.weight)||0, reps=Number(s.reps)||0;
+        volume += weight*reps;
+        exerciseVolume[ex.name]=(exerciseVolume[ex.name]||0)+(weight*reps);
+        prs[ex.name]=Math.max(prs[ex.name]||0,weight);
+      }
+    });
+  }));
+  return {completedSets,volume,exerciseVolume,prs};
+}
+function updateHome(){
+  heroTitle.textContent=activeWorkout.length?'Continue Workout':'Start Workout';
+  heroSub.textContent=activeWorkout.length?`${activeWorkout.length} exercises selected`:"Build today's session";
+  const s=calcHistory();
+  statWorkouts.textContent=history.length;
+  statSets.textContent=s.completedSets;
+  statVolume.textContent=Math.round(s.volume).toLocaleString();
+  statFavs.textContent=favorites.length;
+  if(location.protocol.startsWith('http')) installTip.style.display='block';
+}
+function muscles(){ return ['All',...new Set(EXERCISES.map(x=>x.muscle).filter(Boolean))]; }
+function renderFilters(){
+  filters.innerHTML=muscles().map(m=>`<button class="chip ${selectedMuscle===m?'active':''}" onclick="selectedMuscle='${esc(m)}';renderFilters();renderExercises()">${esc(m)}</button>`).join('');
+}
+function exerciseRow(x){
+  const isFav=favorites.includes(String(x.id));
+  return `<div class="exercise">
+    <div class="icon" onclick="showExercise('${x.id}')">${x.image?`<img src="${esc(x.image)}" alt="">`:'🏋️'}</div>
+    <div class="grow" onclick="showExercise('${x.id}')">
+      <div class="title">${esc(x.name)}</div>
+      <div class="small">${esc(x.muscle||'General')} • ${esc(x.equipment||'Equipment')}</div>
+    </div>
+    <button class="fav" onclick="toggleFavorite('${x.id}');event.stopPropagation()">${isFav?'★':'☆'}</button>
+  </div>`;
+}
+function renderExercises(){
+  renderFilters();
+  const q=search.value.trim().toLowerCase();
+  const list=EXERCISES.filter(x=>(selectedMuscle==='All'||x.muscle===selectedMuscle)&&(!q||`${x.name} ${x.muscle} ${x.equipment}`.toLowerCase().includes(q)));
+  exerciseList.innerHTML=list.map(exerciseRow).join('') || `<div class="empty">No exercises found.</div>`;
+
+  const recentObjs=recents.map(getExercise).filter(Boolean).slice(0,5);
+  recentSection.innerHTML=recentObjs.length?`<div class="sectionTitle">Recently used</div>${recentObjs.map(exerciseRow).join('')}`:'';
+
+  const favObjs=favorites.map(getExercise).filter(Boolean);
+  favoriteSection.innerHTML=favObjs.length?`<div class="sectionTitle">Favorites ⭐</div>${favObjs.map(exerciseRow).join('')}`:'';
+}
+function toggleFavorite(id){
+  id=String(id);
+  favorites=favorites.includes(id)?favorites.filter(x=>x!==id):[id,...favorites];
+  save(); renderExercises();
+}
+function addRecent(id){
+  id=String(id); recents=[id,...recents.filter(x=>x!==id)].slice(0,12); save();
+}
+function showExercise(id){
+  const x=getExercise(id); if(!x)return;
+  addRecent(id);
+  const isFav=favorites.includes(String(x.id));
+  let media = `<div><div style="font-size:58px">🏋️</div><b>Exercise demo</b><div class="small">Sync the online catalog to load available media.</div></div>`;
+  if(x.video) media=`<video controls playsinline src="${esc(x.video)}"></video>`;
+  else if(x.image) media=`<img src="${esc(x.image)}" alt="${esc(x.name)}">`;
+
+  const youtube=`https://www.youtube.com/results?search_query=${encodeURIComponent(x.name+' exercise correct form')}`;
+  detail.innerHTML=`
+    <div class="media">${media}</div>
+    <div class="row space" style="margin-top:18px">
+      <div><h2 style="margin:0">${esc(x.name)}</h2><div class="small">${esc(x.source||'RSHA FIT')}</div></div>
+      <button class="fav" onclick="toggleFavorite('${x.id}');showExercise('${x.id}')">${isFav?'★':'☆'}</button>
+    </div>
+    <div class="row wrap" style="margin-top:10px"><span class="badge">${esc(x.muscle||'General')}</span><span class="badge">${esc(x.equipment||'Equipment')}</span></div>
+    <div class="row wrap" style="margin:18px 0">
+      <button class="btn pink grow" onclick="addExercise('${x.id}')">+ Add to Workout</button>
+      <button class="btn gray" onclick="window.open('${youtube}','_blank')">▶ Video search</button>
+    </div>
+    <h3>How to perform</h3><ol>${(x.instructions||[]).map(i=>`<li>${i}</li>`).join('')}</ol>
+    <h3>Common mistakes</h3><ul>${(x.mistakes||[]).map(i=>`<li>${i}</li>`).join('')}</ul>
+    <p class="note">Technique guidance is educational. A video cannot confirm that your individual form is correct. Stop if an exercise causes sharp or unusual pain.</p>`;
+  modal.classList.add('show');
+}
+function closeModal(){modal.classList.remove('show')}
+function addExercise(id){
+  if(!activeWorkout.some(w=>String(w.exerciseId)===String(id))){
+    activeWorkout.push({exerciseId:String(id),sets:[{weight:'',reps:'',done:false}]});
+    save();
+  }
+  addRecent(id);
+  closeModal(); go('workout');
+}
+function renderWorkout(){
+  if(!activeWorkout.length){
+    workoutList.innerHTML=`<div class="empty"><div style="font-size:56px">🏋️</div><h3>Your workout is empty</h3><p>Add an exercise from the library.</p><button class="btn pink" onclick="go('exercises')">Add Exercise</button></div>`;
+    finishBox.style.display='none'; return;
+  }
+  finishBox.style.display='block';
+  workoutList.innerHTML=activeWorkout.map((w,wi)=>{
+    const x=getExercise(w.exerciseId); if(!x)return '';
+    return `<div class="workoutEx">
+      <div class="row space"><div><div class="title">${esc(x.name)}</div><div class="small">${esc(x.muscle)} • ${esc(x.equipment)}</div></div>
+      <button class="btn gray" onclick="removeExercise(${wi})">Remove</button></div>
+      ${w.sets.map((s,si)=>`
+      <div class="setrow">
+        <div><div class="small">Set</div><b>${si+1}</b></div>
+        <label><div class="small">kg</div><input type="number" inputmode="decimal" min="0" value="${esc(s.weight)}" onchange="setVal(${wi},${si},'weight',this.value)"></label>
+        <label><div class="small">reps</div><input type="number" inputmode="numeric" min="0" value="${esc(s.reps)}" onchange="setVal(${wi},${si},'reps',this.value)"></label>
+        <button class="check ${s.done?'done':''}" onclick="toggleDone(${wi},${si})">${s.done?'✓':'○'}</button>
+      </div>`).join('')}
+      <button class="btn soft" onclick="addSet(${wi})">+ Add Set</button>
+    </div>`;
+  }).join('');
+}
+function addSet(wi){activeWorkout[wi].sets.push({weight:'',reps:'',done:false});save();renderWorkout()}
+function setVal(wi,si,k,v){activeWorkout[wi].sets[si][k]=v;save()}
+function toggleDone(wi,si){
+  activeWorkout[wi].sets[si].done=!activeWorkout[wi].sets[si].done;
+  save();renderWorkout();
+  if(activeWorkout[wi].sets[si].done) startTimer();
+}
+function removeExercise(wi){activeWorkout.splice(wi,1);save();renderWorkout()}
+function finishWorkout(){
+  if(!activeWorkout.length)return;
+  history.unshift({date:new Date().toISOString(),exercises:JSON.parse(JSON.stringify(activeWorkout))});
+  activeWorkout=[];save();renderWorkout();go('history');
+}
+function renderHistory(){
+  if(!history.length){historyList.innerHTML='<div class="empty">No completed workouts yet.</div>';return}
+  historyList.innerHTML=history.map((h,idx)=>{
+    let sets=0,vol=0;
+    h.exercises.forEach(w=>w.sets.forEach(s=>{if(s.done){sets++;vol+=(Number(s.weight)||0)*(Number(s.reps)||0)}}));
+    return `<div class="historyItem" onclick="showHistory(${idx})"><div class="title">${new Date(h.date).toLocaleString()}</div><div class="small">${h.exercises.length} exercises • ${sets} completed sets • ${Math.round(vol).toLocaleString()} kg volume</div></div>`;
+  }).join('');
+}
+function showHistory(idx){
+  const h=history[idx];
+  detail.innerHTML=`<h2>Workout details</h2><div class="small">${new Date(h.date).toLocaleString()}</div>`+
+  h.exercises.map(w=>{
+    const x=getExercise(w.exerciseId); if(!x)return '';
+    return `<div style="margin-top:18px"><div class="title">${esc(x.name)}</div>${w.sets.map((s,i)=>`<div class="small">Set ${i+1}: ${esc(s.weight||0)} kg × ${esc(s.reps||0)} ${s.done?'✓':''}</div>`).join('')}</div>`;
+  }).join('');
+  modal.classList.add('show');
+}
+function renderProgress(){
+  const s=calcHistory();
+  progressStats.innerHTML=`
+    <div class="stat"><div class="n">${history.length}</div><div class="l">workouts</div></div>
+    <div class="stat"><div class="n">${s.completedSets}</div><div class="l">completed sets</div></div>
+    <div class="stat"><div class="n">${Math.round(s.volume).toLocaleString()}</div><div class="l">kg total volume</div></div>
+    <div class="stat"><div class="n">${Object.keys(s.prs).length}</div><div class="l">tracked exercises</div></div>`;
+
+  const vols=Object.entries(s.exerciseVolume).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const max=vols.length?vols[0][1]:1;
+  volumeBars.innerHTML=vols.length?vols.map(([name,v])=>`
+    <div class="barrow"><div class="barname">${esc(name)}</div><div class="progressbar"><div style="width:${Math.max(3,(v/max)*100)}%"></div></div><div class="barvalue">${Math.round(v)}</div></div>`).join(''):`<div class="muted">Complete a workout to see your volume.</div>`;
+
+  const prs=Object.entries(s.prs).sort((a,b)=>b[1]-a[1]);
+  prList.innerHTML=prs.length?prs.map(([name,w])=>`<div class="historyItem row space"><div>${esc(name)}</div><b>${w} kg 🏆</b></div>`).join(''):`<div class="muted">Your heaviest completed set for each exercise will appear here.</div>`;
+}
+function formatTime(sec){const m=Math.floor(sec/60),s=sec%60;return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`}
+function startTimer(){
+  clearInterval(timerInterval);
+  timerLeft=Number(restSeconds.value)||90;
+  timerText.textContent=formatTime(timerLeft);
+  timerInterval=setInterval(()=>{
+    timerLeft--;timerText.textContent=formatTime(Math.max(0,timerLeft));
+    if(timerLeft<=0){
+      clearInterval(timerInterval);
+      if(navigator.vibrate) navigator.vibrate([200,100,200]);
+      try{new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=').play()}catch(e){}
+    }
+  },1000);
+}
+function stopTimer(){clearInterval(timerInterval);timerLeft=Number(restSeconds.value)||90;timerText.textContent=formatTime(timerLeft)}
+restSeconds.addEventListener('change',stopTimer);
+
+/*
+ Online catalog:
+ Tries wger's public exercisebaseinfo endpoint.
+ It is intentionally defensive: if the external API changes, the local catalog still works.
+*/
+async function syncOnlineExercises(){
+  syncStatus.textContent='Syncing…';
+  try{
+    const url='https://wger.de/api/v2/exercisebaseinfo/?limit=200';
+    const r=await fetch(url,{headers:{'Accept':'application/json'}});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const data=await r.json();
+    const arr=(data.results||[]).map(base=>{
+      const trans=(base.translations||[]).find(t=>t.language===2)||(base.translations||[])[0]||{};
+      const name=trans.name||base.name;
+      if(!name)return null;
+      const img=(base.images||[])[0];
+      const vid=(base.videos||[])[0];
+      const muscles=(base.muscles||[]).map(m=>m.name_en||m.name).filter(Boolean);
+      const eq=(base.equipment||[]).map(e=>e.name).filter(Boolean);
+      const plain=(trans.description||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+      return {
+        id:'wger-'+base.id,
+        name,
+        muscle:muscles[0]||'General',
+        equipment:eq[0]||'Equipment',
+        instructions:plain?[plain,'Use a controlled range of motion and stable setup.']:['Use a controlled range of motion and stable setup.'],
+        mistakes:['Avoid uncontrolled momentum','Stop if the movement causes sharp or unusual pain'],
+        image:img?(img.image||img.url||null):null,
+        video:vid?(vid.video||vid.url||null):null,
+        source:'wger public exercise database'
+      };
+    }).filter(Boolean);
+    onlineExercises=arr;
+    localStorage.setItem('rsha_online_exercises',JSON.stringify(arr));
+    EXERCISES=dedupeExercises([...STARTER_EXERCISES,...onlineExercises]);
+    syncStatus.textContent=`Synced ${arr.length} online exercises.`;
+    renderExercises();
+  }catch(err){
+    syncStatus.textContent='Could not sync from this local file. Publish RSHA FIT online first, then try Sync again.';
+  }
+}
+
+renderFilters();renderExercises();renderWorkout();renderHistory();renderProgress();updateHome();stopTimer();
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
