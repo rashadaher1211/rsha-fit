@@ -414,13 +414,13 @@ restSeconds.addEventListener('change',stopTimer);
 
 /*
  Online catalog:
- Tries wger's public exercisebaseinfo endpoint.
+ Uses wger's current public exerciseinfo endpoint.
  It is intentionally defensive: if the external API changes, the local catalog still works.
 */
 async function syncOnlineExercises(){
   syncStatus.textContent='Syncing…';
   try{
-    const url='https://wger.de/api/v2/exercisebaseinfo/?limit=200';
+    const url='https://wger.de/api/v2/exerciseinfo/?limit=200';
     const r=await fetch(url,{headers:{'Accept':'application/json'}});
     if(!r.ok) throw new Error('HTTP '+r.status);
     const data=await r.json();
@@ -451,7 +451,7 @@ async function syncOnlineExercises(){
     syncStatus.textContent=`Synced ${arr.length} online exercises.`;
     renderExercises();
   }catch(err){
-    syncStatus.textContent='Could not sync from this local file. Publish RSHA FIT online first, then try Sync again.';
+    syncStatus.textContent='Could not sync the online exercise catalog right now. Please try again in a moment.';
   }
 }
 
