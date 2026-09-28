@@ -457,7 +457,7 @@ async function syncOnlineExercises(){
 
 renderFilters();renderExercises();renderWorkout();renderHistory();renderProgress();updateHome();stopTimer();
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){
-  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  navigator.serviceWorker.register('./sw.js?v=4').then(reg=>reg.update()).catch(()=>{});
 }
 </script>
 </body>
